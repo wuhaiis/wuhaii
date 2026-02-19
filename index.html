@@ -1,0 +1,199 @@
+<!DOCTYPE html><html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WUHAİ FREE</title>
+<style>
+:root{--bg:#0b0614;--panel:#140a2a;--card:#160f33;--acc:#a855f7;--acc2:#c084fc;--txt:#f3e8ff;--danger:#ef4444}
+*{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto}
+html,body{height:100%}
+body{margin:0;background:radial-gradient(1200px 600px at 20% -10%, #2b0f66 0%, transparent 60%),var(--bg);color:var(--txt)}
+.hidden{display:none!important}/* TOP */ .top{height:56px;display:flex;align-items:center;gap:12px;padding:0 16px;background:linear-gradient(180deg,#1a0f3a,#0b0614);border-bottom:1px solid #24124a;position:fixed;top:0;left:0;right:0;z-index:50} .burger{font-size:24px;cursor:pointer} .title{font-weight:900;letter-spacing:2px;cursor:pointer} .title small{display:block;color:var(--acc2);font-weight:700} .spacer{flex:1}
+
+/* SIDEBAR */ .sidebar{position:fixed;top:56px;left:0;width:260px;height:calc(100vh - 56px);background:linear-gradient(180deg,#1a0f3a,#140a2a);transform:translateX(-100%);transition:.25s;z-index:40} .sidebar.open{transform:translateX(0)} .sidehead{padding:16px;border-bottom:1px solid #24124a} .nav a{display:block;padding:14px 16px;color:var(--txt);text-decoration:none} .nav a:hover{background:#0b0614}
+
+/* CONTENT */ .content{margin-top:56px;padding:16px;max-width:1100px;margin-left:auto;margin-right:auto} .card{background:linear-gradient(180deg,#1a0f3a,#160f33);border-radius:16px;padding:16px;margin-bottom:16px;border:1px solid #2a1760}
+
+/* DESKTOP */ @media(min-width:769px){.sidebar{transform:none}.content{margin-left:260px}}
+
+/* AUTH */ #auth{max-width:420px;margin:120px auto} .tabs{display:flex;gap:8px;margin-bottom:12px} .tab{flex:1;text-align:center;padding:10px;border-radius:12px;background:#0b0614;border:1px solid #2a1760;cursor:pointer} .tab.active{background:linear-gradient(180deg,var(--acc2),var(--acc));color:#120726;font-weight:900} input,textarea,select{width:100%;padding:12px;border-radius:12px;border:1px solid #2a1760;background:#0b0614;color:var(--txt)} .btn{margin-top:10px;width:100%;background:linear-gradient(180deg,var(--acc),#7c3aed);border:0;border-radius:12px;padding:12px;font-weight:900;color:#120726;cursor:pointer} .btn.ghost{background:transparent;color:var(--txt);border:1px solid #2a1760} .btn.danger{background:linear-gradient(180deg,#fb7185,var(--danger));color:#120726} .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* AUTH MODE */ body.auth-only .top,body.auth-only .sidebar,body.auth-only .content{display:none} body.auth-only #auth{display:block}
+
+/* NICK */ .nick{font-weight:900} .nick.admin{animation:glow 1.8s ease-in-out infinite} @keyframes glow{0%,100%{text-shadow:0 0 6px #fff,0 0 12px var(--acc)}50%{text-shadow:0 0 10px #fff,0 0 20px var(--acc2)}}
+
+.table{width:100%;border-collapse:collapse} .table th,.table td{padding:8px;border-bottom:1px solid #2a1760;text-align:left} </style>
+
+</head>
+<body><div class="top">
+  <div class="burger" onclick="toggleSide()">☰</div>
+  <div class="title" onclick="goHome()">WUHAİ <small>FREE</small></div>
+  <div class="spacer"></div>
+  <button class="btn ghost hidden" id="logoutBtn" onclick="logout()">Çıkış</button>
+</div><aside class="sidebar" id="side">
+  <div class="sidehead"><b>Panel</b></div>
+  <nav class="nav">
+    <a href="#" onclick="show('home')">🏠 Ana Sayfa</a>
+    <a href="#" onclick="show('combo')">🧹 Combo Cleaner</a>
+    <a href="#" onclick="show('randcombo')">🎲 Random Combo</a>
+    <a href="#" id="adminLink" class="hidden" onclick="show('admin')">👑 Admin Panel</a>
+    <a href="#" onclick="show('rules')">📜 Kurallar</a>
+  </nav>
+</aside><main class="content">
+  <section id="home" class="card hidden">
+    <h3>Ana Sayfa</h3>
+    <p>Hoş geldin <span id="whoNick" class="nick"></span></p>
+    <div class="card"><h4>Duyurular</h4><div id="annList">Henüz duyuru yok.</div></div>
+    <div class="card"><h4>Son Giriş</h4><p id="lastLogin">-</p></div>
+  </section>  <section id="combo" class="card hidden">
+    <h3>Combo Cleaner</h3>
+    <p id="comboStatus">Hazır.</p>
+    <input type="file" id="comboFile" accept=".txt" />
+    <textarea id="comboInput" rows="8" placeholder="email:pass\nemail|pass\nemail;pass"></textarea>
+    <div class="row">
+      <button class="btn" type="button" onclick="cleanCombos()">Temizle</button>
+      <button class="btn ghost" type="button" onclick="downloadClean()">TXT İndir</button>
+    <div class="card">
+  </div>
+<b>İstatistik</b><br>
+  Toplam: <span id="stTotal">0</span><br>
+  Geçerli: <span id="stValid">0</span><br>
+  Geçersiz: <span id="stInvalid">0</span><br>
+  Tekrar: <span id="stDup">0</span>
+    </div>
+    <div class="card"><pre id="comboOutput" style="white-space:pre-wrap"></pre></div>
+  </section>  <section id="randcombo" class="card hidden">
+    <h3>Random Combo (DEMO)</h3>
+    <p>Her tıklamada 100 adet üretir.</p>
+    <div class="row">
+      <select id="mailDom"><option>gmail.com</option><option>outlook.com</option><option>yahoo.com</option></select>
+      <button class="btn" type="button" onclick="gen100()">100 Üret</button>
+    </div>
+    <div class="row"><button class="btn ghost" type="button" onclick="downloadRand()">Tümünü İndir</button><span id="useCount">Kullanım: 0</span></div>
+    <div class="card"><pre id="randOut" style="white-space:pre-wrap"></pre></div>
+  </section>  <section id="admin" class="card hidden">
+    <h3>Admin Panel</h3>
+    <div class="row">
+      <div class="card">
+        <h4>Duyurular</h4>
+        <textarea id="annInput" rows="3" placeholder="Yeni duyuru"></textarea>
+        <button class="btn" type="button" onclick="addAnn()">Ekle</button>
+        <div id="annAdmin"></div>
+      </div>
+      <div class="card">
+        <h4>Kurallar</h4>
+        <textarea id="rulesInput" rows="3"></textarea>
+        <button class="btn" type="button" onclick="saveRules()">Kaydet</button>
+      </div>
+    </div>
+    <h4>Kullanıcılar</h4>
+    <table class="table" id="userTable"></table>
+  </section>  <section id="rules" class="card hidden"><h3>Kurallar</h3><p id="rulesText"><b>BU SİTEDE YAPTIĞINIZ HİÇ BİR ŞEY SORUMLULUĞUMUZDA DEĞİLDİR.</b></p></section>
+</main><section id="auth" class="card hidden">
+  <div class="tabs">
+    <div class="tab active" id="tLogin" onclick="tab('login')">Giriş</div>
+    <div class="tab" id="tReg" onclick="tab('reg')">Kayıt</div>
+  </div>
+  <div id="login">
+    <input id="lUser" placeholder="Username" />
+    <input id="lPass" type="password" placeholder="Password" />
+    <button class="btn" type="button" onclick="login()">Giriş Yap</button>
+  </div>
+  <div id="reg" class="hidden">
+    <input id="rUser" placeholder="Username" />
+    <input id="rEmail" placeholder="Email (opsiyonel)" />
+    <input id="rPass" type="password" placeholder="Password" />
+    <button class="btn" type="button" onclick="register()">Kayıt Ol</button>
+  </div>
+</section><script>
+const $=id=>document.getElementById(id);
+const ADMIN_USER='wuhai';
+
+function toggleSide(){ $('side').classList.toggle('open') }
+function tab(w){ $('login').classList.toggle('hidden',w!=='login'); $('reg').classList.toggle('hidden',w!=='reg'); $('tLogin').classList.toggle('active',w==='login'); $('tReg').classList.toggle('active',w==='reg'); }
+function randColor(){ const c=['#22d3ee','#a855f7','#34d399','#f472b6','#facc15','#60a5fa']; return c[Math.floor(Math.random()*c.length)] }
+
+function register(){ const u=$('rUser').value.trim(), p=$('rPass').value; if(!u||!p) return alert('Boş'); const e=$('rEmail').value.trim(); localStorage.setItem('u:'+u,JSON.stringify({u,p,e,color:randColor(),admin:u===ADMIN_USER,ban:false})); alert('Kayıt tamam'); tab('login'); }
+function login(){ const u=$('lUser').value.trim(), p=$('lPass').value; const d=localStorage.getItem('u:'+u); if(!d) return alert('Yok'); const o=JSON.parse(d); if(o.ban) return alert('Banlı'); if(o.p!==p) return alert('Hatalı'); if(u===ADMIN_USER){ o.admin=true; localStorage.setItem('u:'+u,JSON.stringify(o)); } localStorage.setItem('sess',u); localStorage.setItem('last_login',u); boot(); }
+function logout(){ localStorage.removeItem('sess'); location.reload(); }
+
+function hideAll(){ ['home','combo','randcombo','admin','rules'].forEach(x=>$(x).classList.add('hidden')); }
+function show(id){ if(!localStorage.getItem('sess')) return; hideAll(); $(id).classList.remove('hidden'); if(innerWidth<769) $('side').classList.remove('open'); }
+function goHome(){ show('home'); }
+
+function renderAnns(){ const a=JSON.parse(localStorage.getItem('announcements')||'[]'); $('annList').innerHTML=a.length?'<ul>'+a.map(x=>'<li>'+x+'</li>').join('')+'</ul>':'Henüz duyuru yok.' }
+function addAnn(){ const v=$('annInput').value.trim(); if(!v) return; const a=JSON.parse(localStorage.getItem('announcements')||'[]'); a.unshift(v); localStorage.setItem('announcements',JSON.stringify(a)); $('annInput').value=''; renderAnns(); renderAnnAdmin(); }
+function delAnn(i){ const a=JSON.parse(localStorage.getItem('announcements')||'[]'); a.splice(i,1); localStorage.setItem('announcements',JSON.stringify(a)); renderAnns(); renderAnnAdmin(); }
+function renderAnnAdmin(){ const a=JSON.parse(localStorage.getItem('announcements')||'[]'); $('annAdmin').innerHTML=a.map((x,i)=>'<div>'+x+' <button class="btn ghost" type="button" onclick="delAnn('+i+')">Sil</button></div>').join('') }
+
+function saveRules(){ const t=$('rulesInput').value.trim(); if(!t) return; localStorage.setItem('rules',t); $('rulesText').innerHTML='<b>'+t+'</b>'; alert('Kaydedildi'); }
+
+function buildUsers(){
+  const t = $('userTable');
+  t.innerHTML = '<tr><th>User</th><th>Admin</th><th>Ban</th><th>Actions</th></tr>';
+  Object.keys(localStorage).filter(k => k.startsWith('u:')).forEach(k => {
+    const o = JSON.parse(localStorage.getItem(k));
+    const tr = document.createElement('tr');
+    const adminClass = o.admin ? 'admin' : '';
+    const adminCheck = o.admin ? '✔' : '';
+    const banCheck = o.ban ? '✔' : '';
+    tr.innerHTML =
+      '<td><span class="nick '+adminClass+'" style="color:'+o.color+'">@'+o.u+'</span></td>'+
+      '<td>'+adminCheck+'</td>'+
+      '<td>'+banCheck+'</td>'+
+      '<td>'+
+        '<button class="btn ghost" type="button" onclick="toggleAdmin(\''+o.u+'\')">Admin</button> '+
+        '<button class="btn ghost" type="button" onclick="toggleBan(\''+o.u+'\')">Ban</button> '+
+        '<button class="btn danger" type="button" onclick="delUser(\''+o.u+'\')">Sil</button>'+
+      '</td>';
+    t.appendChild(tr);
+  });
+}
+function toggleAdmin(u){ if(u===ADMIN_USER) return alert('Ana admin'); const k='u:'+u; const o=JSON.parse(localStorage.getItem(k)); o.admin=!o.admin; localStorage.setItem(k,JSON.stringify(o)); buildUsers(); }
+function toggleBan(u){ const k='u:'+u; const o=JSON.parse(localStorage.getItem(k)); o.ban=!o.ban; localStorage.setItem(k,JSON.stringify(o)); buildUsers(); }
+function delUser(u){ if(!confirm('Silinsin mi?')) return; localStorage.removeItem('u:'+u); buildUsers(); }
+
+// Combo cleaner
+const fileInput=document.getElementById('comboFile'); if(fileInput){ fileInput.addEventListener('change',()=>{ const f=fileInput.files[0]; if(!f) return; const r=new FileReader(); r.onload=e=>{ $('comboInput').value+=( $('comboInput').value?'\n':'' )+e.target.result }; r.readAsText(f); }); }
+function normalizeLine(l){ let s=l.trim(); if(!s) return null; s=s.replace(/[|;,]/g,':').replace(/\s+/g,''); if((s.match(/:/g)||[]).length!==1) return null; const parts=s.split(':'); const u=parts[0], p=parts[1]; if(!u||!p||u.indexOf('@')===-1||p.length<6) return null; return u+':'+p }
+function cleanCombos(){
+  try{
+    const raw = $('comboInput').value || '';
+    const lines = raw.split(/\r?\n/).filter(x=>x.trim());
+
+    let valid=0, invalid=0, dup=0;
+    const set={};
+
+    lines.forEach(l=>{
+      const n = normalizeLine(l);
+      if(!n){ invalid++; return; }
+      if(set[n]){ dup++; return; }
+      set[n]=1; valid++;
+    });
+
+    $('comboOutput').textContent = Object.keys(set).join('\n');
+    $('comboStatus').textContent = 'Temizlendi: '+valid;
+
+    $('stTotal').textContent = lines.length;
+    $('stValid').textContent = valid;
+    $('stInvalid').textContent = invalid;
+    $('stDup').textContent = dup;
+
+  }catch(e){
+    alert('Hata: '+e.message);
+  }
+}
+function downloadClean(){ const t=$('comboOutput').textContent||''; if(!t) return alert('Önce temizle'); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'})); a.download='cleaned_combos.txt'; a.click(); }
+
+// Random combo DEMO
+const names=['ahmet','mehmet','ali','can','emir','berk','efe','kerem','mert','selim','kaan','burak','enes','furkan','deniz','arda','alex','john','mike','david','kevin','lucas','mark','james','ryan','daniel','sam','leo','nick','adam'];
+function rand(n){ const c='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; let s=''; for(let i=0;i<n;i++) s+=c[Math.floor(Math.random()*c.length)]; return s }
+function gen100(){ let out=''; const dom=$('mailDom').value; for(let i=0;i<100;i++){ const nm=names[Math.floor(Math.random()*names.length)]; const nums=Math.floor(100+Math.random()*900); out+=nm+nums+'@'+dom+':'+rand(10)+'\n'; } $('randOut').textContent=out; const u=parseInt(localStorage.getItem('used')||'0',10)+1; localStorage.setItem('used',String(u)); $('useCount').textContent='Kullanım: '+u }
+function downloadRand(){ const t=$('randOut').textContent||''; if(!t) return alert('Önce üret'); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'})); a.download='random_100.txt'; a.click(); }
+
+function loadHome(){ const u=localStorage.getItem('sess'); const o=JSON.parse(localStorage.getItem('u:'+u)); const nick=$('whoNick'); nick.textContent='@'+u; nick.style.color=o.color; nick.classList.toggle('admin',o.admin); $('lastLogin').textContent='@'+(localStorage.getItem('last_login')||'-'); renderAnns(); if(o.admin){ $('adminLink').classList.remove('hidden'); $('rulesInput').value=localStorage.getItem('rules')||$('rulesText').innerText; buildUsers(); renderAnnAdmin(); } else { $('adminLink').classList.add('hidden'); } }
+
+function boot(){ const s=localStorage.getItem('sess'); if(!s){ document.body.classList.add('auth-only'); $('auth').classList.remove('hidden'); return; } document.body.classList.remove('auth-only'); $('auth').classList.add('hidden'); $('logoutBtn').classList.remove('hidden'); $('useCount').textContent='Kullanım: '+(localStorage.getItem('used')||'0'); loadHome(); show('home'); }
+boot();
+</script></body>
+</html>
